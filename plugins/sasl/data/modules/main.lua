@@ -14,6 +14,9 @@ settings["How_fast_does_the_engine_turn_for_a_tach_hour"] = 2000
 settings["Initial_engine_hours"] = 0
 settings["How_long_does_it_take_for_each_tach_hour_digit_to_roll_next_number_in_seconds"] = 0.3
 
+--FlexDash Settings
+settings["How_long_do_timed_popup_windows_last_in_seconds"] = 2
+
 --------------------------------------------------------------------------------
 -- Only one of the following lines should be uncommented
 sasl.setLogLevel ( LOG_DEBUG )  -- use for development
@@ -21,12 +24,15 @@ sasl.setLogLevel ( LOG_DEBUG )  -- use for development
 --------------------------------------------------------------------------------
 
 -- These make SASL light.  You may need to turn one or more on for high level magic
-sasl.options.setAircraftPanelRendering ( true )
-sasl.options.set3DRendering ( true )
+sasl.options.setAircraftPanelRendering ( false )
+sasl.options.set3DRendering ( false )
 sasl.options.setInteractivity ( true )
+
+include "keyboard_handler"
 
 timer_lib = {}
 debug_lib = {}
+
 function debug_lib.on_debug(tString)
 	if getLogLevel() == LOG_DEBUG then print ("DEBUG MODE! "..tString) end
 end
@@ -61,7 +67,7 @@ components = {
 							engine_hours = settings["Initial_engine_hours"],
 							tach_tape_rollout = settings["How_long_does_it_take_for_each_tach_hour_digit_to_roll_next_number_in_seconds"]
 						},
-	jemma_flexdash {}
+	jemma_flexdash {		popup_timeout = settings["How_long_do_timed_popup_windows_last_in_seconds"]}
 }
 
 ----------------------------------------------------------------------------------

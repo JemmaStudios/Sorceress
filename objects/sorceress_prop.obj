@@ -7,7 +7,6 @@ TEXTURE	sorceress_prop.dds
 TEXTURE_NORMAL	sorceress_prop_NRM.png
 NORMAL_METALNESS
 GLOBAL_specular	1
-GLOBAL_no_shadow
 BLEND_GLASS
 POINT_COUNTS	13050	0	0	13050
 
@@ -14372,10 +14371,10 @@ IDX10	13040	13041	13042	13043	13044	13045	13046	13047	13048	13049
 	ANIM_trans	-0	-0.00697	0.1487	-0	-0.00697	0.1487
 	ANIM_rotate_begin	0	0	-1	sim/flightmodel2/engines/prop_rotation_angle_deg[0]
 	ANIM_rotate_key	0	0
-	ANIM_rotate_key	90	-90.000207
-	ANIM_rotate_key	180	-179.99985
-	ANIM_rotate_key	270	-270.00006
-	ANIM_rotate_key	360	-360.00026
+	ANIM_rotate_key	-90	-90.000207
+	ANIM_rotate_key	-180	-179.99985
+	ANIM_rotate_key	-270	-270.00006
+	ANIM_rotate_key	-360	-360.00026
 	ANIM_rotate_end
 	TRIS	2976 6258
 		ANIM_begin
@@ -14388,10 +14387,10 @@ IDX10	13040	13041	13042	13043	13044	13045	13046	13047	13048	13049
 	ANIM_trans	0	-0.00697	0.15662999	0	-0.00697	0.15662999
 	ANIM_rotate_begin	0	0	-1	sim/flightmodel2/engines/prop_rotation_angle_deg[0]
 	ANIM_rotate_key	0	0
-	ANIM_rotate_key	90	-90.000207
-	ANIM_rotate_key	180	-179.99985
-	ANIM_rotate_key	270	-270.00006
-	ANIM_rotate_key	360	-360.00026
+	ANIM_rotate_key	-90	-90.000207
+	ANIM_rotate_key	-180	-179.99985
+	ANIM_rotate_key	-270	-270.00006
+	ANIM_rotate_key	-360	-360.00026
 	ANIM_rotate_end
 	ANIM_show	250	5000	sim/cockpit2/engine/indicators/engine_speed_rpm[0]
 	ANIM_hide	-100	250	sim/cockpit2/engine/indicators/engine_speed_rpm[0]
@@ -14419,4 +14418,4 @@ IDX10	13040	13041	13042	13043	13044	13045	13046	13047	13048	13049
 	ANIM_end
 	TRIS	11142 1908
 
-# Build with Blender 2.90.0 Alpha (build b'fd8d245e6a80'). Exported with XPlane2Blender 4.1.0-beta.1+101.20201117225215
+# Build with Blender 2.91.0 (build b'0f45cab862b8'). Exported with XPlane2Blender 4.1.0-beta.1+101.20201117225215

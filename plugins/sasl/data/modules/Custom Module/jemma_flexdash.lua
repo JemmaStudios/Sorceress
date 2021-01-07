@@ -1,15 +1,32 @@
 --[[
     sorceress_flexdash.lua
 
+    sample new instrument in flexdash.json
+    "gauge_show_1": "1",
+    "gauge_show_1__type__": "number",
+    "gauge_xpos_1": "0",
+    "gauge_xpos_1__type__": "number",
+    "gauge_zpos_1": "0",
+    "gauge_zpos_1__type__": "number",
+    "gauge_name_1": "CHT (3 1\/8\")",
+    "gauge_name_1__type__": "string",
+
 ]]
 
 defineProperty ("popup_timeout", 3) -- number of seconds popup windows stay on
 
-num_instruments = 11
-
+num_instruments = 20
+debug_lib.on_debug("num_instruments: "..num_instruments)
 ttable = {}
 for i = 1, num_instruments do
     table.insert(ttable, 0)
+end
+
+
+closed_move_window = {}
+closed_move_window["flag"] = false
+for i = 1, num_instruments do
+    table.insert(closed_move_window, false)
 end
 
 gauge_show = createGlobalPropertyia ("sorceress/flexdash/gauge_show", ttable)
@@ -67,9 +84,12 @@ local popup_saved = contextWindow {
     noDecore        = true,
     components		= {flexdash_popup{position={0, 0, pop_w, pop_h}, message="FlexDash Configuration Saved"}},
 }
+
+-- dynamically create the move window popups
+pop_h = 300
 move_popups = {}
 for i = 1, num_instruments do
-    local msg = "Moving "..flexdash_settings["gauge_name_"..i].."\n\n".."Click and drag this window\nto reposition."
+    local msg = "Moving "..flexdash_settings["gauge_name_"..i].."\n\n".."(You can move this window.)"
     move_popups[i] = contextWindow {
         name			= "Move Popup "..i,
         position		= {pop_x, pop_y, pop_w, pop_h},
@@ -77,7 +97,8 @@ for i = 1, num_instruments do
         visible			= false,
         vrAuto			= true,
         noDecore        = true,
-        components		= {flexdash_popup{position={0, 0, pop_w, pop_h}, message=msg}},
+        components		= {
+            flexdash_movewindow{position={0, 0, pop_w, pop_h}, message=msg, idx=i}},
     }
 end
 
@@ -97,13 +118,13 @@ for i = 1, num_instruments do
         sasl.setMenuItemName (  Flexdash_Show_Menu ,
                                 flexdash_showmenu_items[i] ,
                                 showhide_name[flexdash_settings["gauge_show_"..i]+1] .. flexdash_settings["gauge_name_"..i])
+        sasl.enableMenuItem ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , get(gauge_show, i))
     end
 end
 
 flexdash_move_fn = {}
 for i = 1, num_instruments do
     flexdash_move_fn[i] = function()
-        debug_lib.on_debug("ver 1.0")
         set(gauge_move, 1-get(gauge_move, i), i)
         if get(gauge_move, i) == 0 then
             sasl.setMenuItemState ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , MENU_UNCHECKED )
@@ -133,6 +154,20 @@ function save_flexdash_settings()
     end
 end
 
+function check_for_closed_move_windows()
+    local ts = ""
+    for i = 1, num_instruments do
+        if closed_move_window[i] then
+            ts = ts.."1\t"
+            flexdash_move_fn[i]()
+            closed_move_window[i] = false
+            closed_move_window["flag"] = false
+        else
+            ts = ts.."0\t"
+        end
+    end
+end
+
 flexdash_showmenu_items = {}
 flexdash_movemenu_items = {}
 
@@ -157,7 +192,10 @@ end
 sasl.appendMenuSeparator ( Flexdash_Menu )
 Flexdash_save_instruments_menuitem = sasl.appendMenuItem ( Flexdash_Menu , "Save Instruments", save_flexdash_settings )
 
-debug_lib.on_debug(string.format("screen_width: %i\tscreen_height: %i\tpop_x: %i\tpop_y: %i", screen_width, screen_height, pop_x, pop_y))
+for i = 1, num_instruments do
+    sasl.enableMenuItem ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , get(gauge_show, i))
+end
+
 local popped_up = false
 local old_time = 0
 function update ()
@@ -166,13 +204,16 @@ function update ()
         if not popped_up then
             popped_up = true
             old_time = get(xp_network_time)
-            debug_lib.on_debug(get(xp_network_time))
         elseif old_time + get(popup_timeout) <= get(xp_network_time) then
-            debug_lib.on_debug(old_time + get(popup_timeout).."\t"..get(xp_network_time))
             popped_up = false
             popup_error:setIsVisible(false)
             popup_saved:setIsVisible(false)
         end
     end
+    if closed_move_window["flag"] then
+        closed_move_window["flag"] = false
+        check_for_closed_move_windows()
+    end
+
     updateAll (components)
 end

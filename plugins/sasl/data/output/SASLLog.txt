@@ -3,6 +3,7 @@
 [BECK-MAHONEY_SORCERESS INFO]: Loading module...
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	module
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: Loading the Beck-Mahoney Sorceress by Jemma Studios...
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: including	keyboard_handler
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ********************* DEBUG MODE IS ON ************************
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! *  If you are reading this I screwed up before distribution.  *
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ***************************************************************
@@ -10,16 +11,9 @@
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	sorceress_control
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! The livery selected is: 
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	jemma_flexdash
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! num_instruments: 20
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_popup
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	rectangle
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! screen_width: 1640	screen_height: 1078	pop_x: 670	pop_y: 489
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_movewindow
 [BECK-MAHONEY_SORCERESS INFO]: Module loaded
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ver 1.0
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ver 1.0
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ver 1.0
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ver 1.0
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ver 1.0
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: Sorceress settings saving to C:\Program Files (x86)/Steam/steamapps/common/X-Plane 11/Aircraft/Jemma Studios/Sorceress/flexdash.json
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! 14150.427734375
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! 14153.427734375	14153.428710938
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! ver 1.0
