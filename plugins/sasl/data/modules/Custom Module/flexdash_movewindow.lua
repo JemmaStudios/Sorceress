@@ -19,7 +19,7 @@ local click_delay = 0.5 -- number of seconds to wait before spamming the mouse d
 local x_lo_limit = -0.2
 local x_hi_limit = 0.2
 local z_lo_limit = -0.15
-local z_hi_limit = 0.30
+local z_hi_limit = 0.35
 local x_zero = 0
 local z_zero = 0.175
 

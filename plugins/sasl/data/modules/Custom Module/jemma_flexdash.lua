@@ -15,7 +15,7 @@
 
 defineProperty ("popup_timeout", 3) -- number of seconds popup windows stay on
 
-num_instruments = 20
+num_instruments = 22
 debug_lib.on_debug("num_instruments: "..num_instruments)
 ttable = {}
 for i = 1, num_instruments do
