@@ -10,10 +10,28 @@
     "gauge_zpos_1__type__": "number",
     "gauge_name_1": "CHT (3 1\/8\")",
     "gauge_name_1__type__": "string",
+    "gauge_static_1": "1",
+    "gauge_static_1__type__": "number",
 
 ]]
 
 defineProperty ("popup_timeout", 3) -- number of seconds popup windows stay on
+
+local saved = true
+
+-- constants used to track which command was used to try to close the acf without saving the dash.
+CMD_CLEAR = 0
+CMD_FLIGHT_CONFIG = 1
+CMD_QUIT = 2
+CMD_RELOAD_ACF = 3
+CMD_RELOAD_ACF_NOART = 4
+
+-- used by flexdash_saverestore component.
+savefirst_flags = {}
+savefirst_flags["close"] = false
+savefirst_flags["doSave"] = false
+savefirst_flags["doRestore"] = false
+savefirst_flags["exit_command"] = CMD_CLEAR
 
 num_instruments = 22
 debug_lib.on_debug("num_instruments: "..num_instruments)
@@ -23,16 +41,18 @@ for i = 1, num_instruments do
 end
 
 
-closed_move_window = {}
-closed_move_window["flag"] = false
+fd_ui = {}
+fd_ui["flag"] = false
+fd_ui["moved"] = false
 for i = 1, num_instruments do
-    table.insert(closed_move_window, false)
+    table.insert(fd_ui, false)
 end
 
 gauge_show = createGlobalPropertyia ("sorceress/flexdash/gauge_show", ttable)
 gauge_xpos = createGlobalPropertyfa ("sorceress/flexdash/gauge_xpos", ttable)
 gauge_zpos = createGlobalPropertyfa ("sorceress/flexdash/gauge_zpos", ttable)
 gauge_move = createGlobalPropertyfa ("sorceress/flexdash/gauge_move", ttable)
+gauge_static = ttable
 
 xp_network_time = globalPropertyf ("sim/network/misc/network_time_sec")
 
@@ -43,7 +63,24 @@ config_path = config_path.. "/flexdash.json"
 
 showhide_name = {"Show ", "Hide "}
 
+function check_exit_commands()
+    if savefirst_flags["exit_command"] == CMD_FLIGHT_CONFIG then
+        sasl.commandOnce(xp_flight_config_cmd)
+    elseif savefirst_flags["exit_command"] == CMD_QUIT then
+        sasl.commandOnce(xp_quit_cmd)
+
+-- Strangely XP crashes if we activate these commands.  Users will just have to select reload again after they save/restore.
+    -- elseif savefirst_flags["exit_command"] == CMD_RELOAD_ACF then
+    --     sasl.commandOnce(xp_reload_acf_cmd)
+    -- elseif savefirst_flags["exit_command"] == CMD_RELOAD_ACF_NOART then
+    --     sasl.commandOnce(xp_reload_acf_noart_cmd)
+    end
+    savefirst_flags["exit_command"] = CMD_CLEAR
+end
+
 function load_instruments()
+    fd_ui["moved"] = false
+
     if isFileExists ( config_path ) then 
         flexdash_config = sasl.readConfig ( config_path , "JSON" )
         for i, v in pairs (flexdash_config) do
@@ -53,40 +90,119 @@ function load_instruments()
             set (gauge_show, flexdash_settings["gauge_show_"..i], i)
             set (gauge_xpos, flexdash_settings["gauge_xpos_"..i], i)
             set (gauge_zpos, flexdash_settings["gauge_zpos_"..i], i)
+            gauge_static[i] = flexdash_settings["gauge_static_"..i]
         end    
+        savefirst_flags["doRestore"] = false
+        check_exit_commands()
     end
 end
 
 load_instruments()
 
-local pop_w = 300
-local pop_h = 100
+local pop_w = 400
+local pop_h = 200
 
 screen_x, screen_y, screen_width, screen_height = sasl.windows.getScreenBoundsGlobal ()
 local pop_x = (screen_width-pop_w)/2
 local pop_y = (screen_height-pop_h)/2
 
 local popup_error = contextWindow {
-    name			= "My first popup",
+    name			= "File Save Error",
     position		= {pop_x, pop_y, pop_w, pop_h},
     noResize		= true,
     visible			= false,
+    noBackground    = true,
     vrAuto			= true,
     noDecore        = true,
     components		= {flexdash_popup{position={0, 0, pop_w, pop_h}, message="Error Saving File.\nCheck log.txt"}},
 }
+
 local popup_saved = contextWindow {
-    name			= "My first popup",
+    name			= "Save Success",
     position		= {pop_x, pop_y, pop_w, pop_h},
     noResize		= true,
     visible			= false,
+    noBackground    = true,
     vrAuto			= true,
     noDecore        = true,
     components		= {flexdash_popup{position={0, 0, pop_w, pop_h}, message="FlexDash Configuration Saved"}},
 }
 
+local popup_savefirst = contextWindow {
+    name			= "Save Warning",
+    position		= {pop_x, pop_y, pop_w, pop_h},
+    noResize		= true,
+    visible			= false,
+    noBackground    = true,
+    vrAuto			= true,
+    noDecore        = true,
+    components		= {
+        flexdash_saverestore{position={0, 0, pop_w, pop_h}, message="FlexDash changes not saved!\nSave Changes or Restore?"}},
+}
+
+function flight_config_cmd_handler (phase)
+    if phase == SASL_COMMAND_BEGIN then
+        if fd_ui["moved"] then
+            savefirst_flags["exit_command"] = CMD_FLIGHT_CONFIG
+            popup_savefirst:setIsVisible(true)
+            return 0
+        else
+            return 1
+        end
+    end
+end
+
+function quit_cmd_handler (phase)
+    if phase == SASL_COMMAND_BEGIN then
+        if fd_ui["moved"] then
+            savefirst_flags["exit_command"] = CMD_QUIT
+            popup_savefirst:setIsVisible(true)
+            return 0
+        else
+            return 1
+        end
+    end
+end
+
+function reload_acf_cmd_handler (phase)
+    if phase == SASL_COMMAND_BEGIN then
+        if fd_ui["moved"] then
+            savefirst_flags["exit_command"] = CMD_RELOAD_ACF
+            popup_savefirst:setIsVisible(true)
+            return 0
+        else
+            return 1
+        end
+    end
+end
+
+function reload_acf_noart_cmd_handler (phase)
+    if phase == SASL_COMMAND_BEGIN then
+        if fd_ui["moved"] then
+            savefirst_flags["exit_command"] = CMD_RELOAD_ACF_NOART
+            popup_savefirst:setIsVisible(true)
+            return 0
+        else
+            return 1
+        end
+    end
+end
+
+xp_flight_config_cmd = sasl.findCommand ("sim/operation/toggle_flight_config")
+sasl.registerCommandHandler ( xp_flight_config_cmd , 1 , flight_config_cmd_handler )
+
+xp_quit_cmd = sasl.findCommand ("sim/operation/quit")
+sasl.registerCommandHandler ( xp_quit_cmd , 1 , quit_cmd_handler )
+
+xp_reload_acf_cmd = sasl.findCommand ("sim/operation/reload_aircraft")
+sasl.registerCommandHandler ( xp_reload_acf_cmd , 1 , reload_acf_cmd_handler )
+
+xp_reload_acf_noart_cmd = sasl.findCommand ("sim/operation/reload_aircraft_no_art")
+sasl.registerCommandHandler ( xp_reload_acf_noart_cmd , 1 , reload_acf_noart_cmd_handler )
+
 -- dynamically create the move window popups
-pop_h = 300
+pop_w = 400
+pop_h = 200
 move_popups = {}
 for i = 1, num_instruments do
     local msg = "Moving "..flexdash_settings["gauge_name_"..i].."\n\n".."(You can move this window.)"
@@ -96,6 +212,7 @@ for i = 1, num_instruments do
         noResize		= true,
         visible			= false,
         vrAuto			= true,
+        noBackground    = true,
         noDecore        = true,
         components		= {
             flexdash_movewindow{position={0, 0, pop_w, pop_h}, message=msg, idx=i}},
@@ -104,6 +221,7 @@ end
 
 
 function flexdash_reload_handler(phase)
+
     if phase == SASL_COMMAND_BEGIN then
         load_instruments()
     end
@@ -118,7 +236,9 @@ for i = 1, num_instruments do
         sasl.setMenuItemName (  Flexdash_Show_Menu ,
                                 flexdash_showmenu_items[i] ,
                                 showhide_name[flexdash_settings["gauge_show_"..i]+1] .. flexdash_settings["gauge_name_"..i])
-        sasl.enableMenuItem ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , get(gauge_show, i))
+        if gauge_static[i] == 0 then
+            sasl.enableMenuItem ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , get(gauge_show, i))
+        end
     end
 end
 
@@ -144,26 +264,27 @@ function save_flexdash_settings()
         flexdash_settings["gauge_show_"..i] = get (gauge_show, i)
         flexdash_settings["gauge_xpos_"..i] = get (gauge_xpos, i)
         flexdash_settings["gauge_zpos_"..i] = get (gauge_zpos, i)
+        flexdash_settings["gauge_static_"..i] = gauge_static[i]
     end
     if sasl.writeConfig ( config_path , "JSON" , flexdash_settings) then
         sasl.logInfo ("Sorceress settings saving to "..config_path)
         popup_saved:setIsVisible(true)
+        fd_ui["moved"] = false
+        savefirst_flags["doSave"] = false
+        check_exit_commands()
     else
         sasl.logError("Error writing Sorceress settings to "..config_path)
         popup_error:setIsVisible(true)
     end
 end
 
-function check_for_closed_move_windows()
-    local ts = ""
+function check_for_fd_uis()
     for i = 1, num_instruments do
-        if closed_move_window[i] then
-            ts = ts.."1\t"
+        if fd_ui[i] then
             flexdash_move_fn[i]()
-            closed_move_window[i] = false
-            closed_move_window["flag"] = false
+            fd_ui[i] = false
+            fd_ui["flag"] = false
         else
-            ts = ts.."0\t"
         end
     end
 end
@@ -185,15 +306,19 @@ end
 Flexdash_Movemenu_item = sasl.appendMenuItem (Flexdash_Menu, "Move Instrument")
 Flexdash_Move_Menu = sasl.createMenu ("Move Instrument", Flexdash_Menu , Flexdash_Movemenu_item )
 for i=1, num_instruments do
-    flexdash_movemenu_items[i] = sasl.appendMenuItem (  Flexdash_Move_Menu, 
-                            "Move ".. flexdash_settings["gauge_name_"..i], 
-                            flexdash_move_fn[i])
+    if gauge_static[i] == 0 then
+        flexdash_movemenu_items[i] = sasl.appendMenuItem (  Flexdash_Move_Menu, 
+                                "Move ".. flexdash_settings["gauge_name_"..i], 
+                                flexdash_move_fn[i])
+    end
 end
 sasl.appendMenuSeparator ( Flexdash_Menu )
 Flexdash_save_instruments_menuitem = sasl.appendMenuItem ( Flexdash_Menu , "Save Instruments", save_flexdash_settings )
 
 for i = 1, num_instruments do
-    sasl.enableMenuItem ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , get(gauge_show, i))
+    if gauge_static[i] == 0 then
+        sasl.enableMenuItem ( Flexdash_Move_Menu , flexdash_movemenu_items[i] , get(gauge_show, i))
+    end
 end
 
 local popped_up = false
@@ -210,10 +335,19 @@ function update ()
             popup_saved:setIsVisible(false)
         end
     end
-    if closed_move_window["flag"] then
-        closed_move_window["flag"] = false
-        check_for_closed_move_windows()
+    if fd_ui["flag"] then
+        fd_ui["flag"] = false
+        check_for_fd_uis()
     end
-
+    if savefirst_flags["close"] then
+        savefirst_flags["close"] = false
+        popup_savefirst:setIsVisible(false)
+    end
+    if savefirst_flags["doRestore"] then
+        load_instruments()
+    end
+    if savefirst_flags["doSave"] then
+        save_flexdash_settings()
+    end
     updateAll (components)
 end
