@@ -152,5 +152,19 @@
     "pos_z_4": "0",
     "pos_z_4__type__": "number",
     "move_3": "0",
-    "move_3__type__": "number"
+    "move_3__type__": "number",
+    "pos_x_12": "0",
+    "pos_x_12__type__": "number",
+    "pos_z_12": "0",
+    "pos_z_12__type__": "number",
+    "which_one_12": "2",
+    "which_one_12__type__": "number",
+    "move_12": "0",
+    "move_12__type__": "number",
+    "show_12": "1",
+    "show_12__type__": "number",
+    "lg_id_12": "6",
+    "lg_id_12__type__": "number",
+    "sm_id_12": "7",
+    "sm_id_12__type__": "number"
 }

@@ -54,7 +54,7 @@ for i = 1, get(num_radio_buttons) do
 end
 
 function update ()
-    if get(my_radio_group_id) < 10 then
+    if get(my_radio_group_id) < 10 or get(my_radio_group_id) == 12 then
         for i = 1, get(num_radio_buttons) do
             if radio_group_id[get(my_radio_group_id)]["checked"] == i then
                 radio_group_id[get(my_radio_group_id)][i] = IS_CHECKED

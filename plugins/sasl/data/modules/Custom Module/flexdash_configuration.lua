@@ -16,12 +16,12 @@ local IS_UNCHECKED = 2
 
 -- define global tables
 checkbox_id = {}
-for i = 1, 11 do
+for i = 1, 12 do
     checkbox_id[i] = 2 - flexdash_preset_settings["show_"..i]
 end
 radio_group_id = {}
 
-for i = 1, 11 do
+for i = 1, 12 do
     radio_group_id[i] = {}
 end
 
@@ -30,6 +30,7 @@ for i = 1, 9 do
 end
 -- preset group
 radio_group_id[10]["checked"] = flexdash_settings["preset"]
+radio_group_id[12]["checked"] = flexdash_preset_settings["which_one_12"]
 
 -- set up instrument status configuration data
 local SHOW_ME = 1
@@ -59,6 +60,7 @@ config_buttons[7] = {48, 180, 28, 27}
 config_buttons[8] = {48, 157, 28, 27}
 config_buttons[9] = {48, 107, 28, 27}
 config_buttons[10] = {378, 326, 28, 27}
+config_buttons[11] = {48, 84, 28, 27}
 
 flexdash_lib = {}
 flexdash_lib.num_click_spots = 0
@@ -148,6 +150,7 @@ for i = 1, 9 do
     table.insert (components, flexdash_ui_checkbox {  position = config_buttons[i], width = config_buttons[i][3], height = config_buttons[i][4], my_checkbox_id = i})
 end
 table.insert (components, flexdash_ui_checkbox {  position = config_buttons[10], width = config_buttons[10][3], height = config_buttons[10][4], my_checkbox_id = 11})
+table.insert (components, flexdash_ui_checkbox {  position = config_buttons[11], width = config_buttons[11][3], height = config_buttons[11][4], my_checkbox_id = 12})
 for i = 1, 8 do
     table.insert (components, flexdash_ui_radiogroup {position = {220, 318-((i-1)*23), 100, 50}, width = 100, height = 50, my_radio_group_id = i, num_radio_buttons = 2})
     table.insert (components, flexdash_ui_movelock_button {    position = {290, 318-((i-1)*23), 60, 30},
@@ -162,6 +165,8 @@ table.insert (components, flexdash_ui_movelock_button {    position = {290, 103,
     height = 30,
     button_group_id = 9}
     )
+table.insert (components, flexdash_ui_radiogroup {position = {220, 80, 100, 50}, width = 100, height = 50, my_radio_group_id = 12, num_radio_buttons = 2})
+
 table.insert (components, flexdash_ui_radiogroup {position = {378, 103, 50, 300}, width = 100, 
     height = 50, my_radio_group_id = 10, num_radio_buttons = 7, isVertical=true, spacing=23})
 table.insert (components, flexdash_ui_movelock_button {    position = {570, 346, 60, 30},
@@ -176,12 +181,13 @@ table.insert (components, flexdash_ui_movelock_button {    position = {570, 323,
     )
 
 function update ()
-    for i = 1, 11 do
+    for i = 1, 12 do
         checkbox_id[i] = 2 - flexdash_preset_settings["show_"..i]
     end    
     for i = 1, 9 do
         radio_group_id[i]["checked"] = flexdash_preset_settings["which_one_"..i]
     end
+    radio_group_id[12]["checked"] = flexdash_preset_settings["which_one_12"]
     updateAll (components)
 end
 

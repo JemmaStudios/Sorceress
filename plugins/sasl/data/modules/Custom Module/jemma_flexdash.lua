@@ -118,7 +118,7 @@ function load_preset ()
             flexdash_preset_settings[i] = v
         end
         set (gauge_show, 1, 3)
-        for i = 1, 11 do
+        for i = 1, 12 do
             if i == 10 then
                 set (gauge_show, 1, flexdash_preset_settings["lg_id_"..i])
                 flexdash_settings["gauge_show_"..flexdash_preset_settings["lg_id_"..i]] = 1
@@ -142,7 +142,7 @@ function load_preset ()
             flexdash_settings["group_id_"..flexdash_preset_settings["sm_id_"..i]] = i
         end
     else
-        for i = 1, 11 do
+        for i = 1, 12 do
             flexdash_preset_settings["show_"..i] = 0
             flexdash_preset_settings["move_"..i] = 0
             flexdash_preset_settings["which_one_"..i] = 1
@@ -169,6 +169,8 @@ function load_preset ()
         flexdash_preset_settings["sm_id_10"] = 3
         flexdash_preset_settings["lg_id_11"] = 12
         flexdash_preset_settings["sm_id_11"] = 12
+        flexdash_preset_settings["lg_id_12"] = 6
+        flexdash_preset_settings["sm_id_12"] = 7
         flexdash_preset_settings["pos_x_1"] = 0
         flexdash_preset_settings["pos_z_1"] = 0
         flexdash_preset_settings["pos_x_2"] = 0
@@ -191,6 +193,8 @@ function load_preset ()
         flexdash_preset_settings["pos_z_10"] = 0
         flexdash_preset_settings["pos_x_11"] = 0
         flexdash_preset_settings["pos_z_11"] = 0
+        flexdash_preset_settings["pos_x_12"] = 0
+        flexdash_preset_settings["pos_z_12"] = 0
     end
 end
 load_instruments()
@@ -405,7 +409,7 @@ end
 function save_preset ()
     preset_file = sasl.getProjectPath() .. "/Custom Module/data/preset"..flexdash_settings["preset"]..".json"
     local instrument_id
-    for i = 1, 11 do
+    for i = 1, 12 do
         local lg_id = flexdash_preset_settings["lg_id_"..i]
         local sm_id = flexdash_preset_settings["sm_id_"..i]
         local which_one = flexdash_preset_settings["which_one_"..i]
