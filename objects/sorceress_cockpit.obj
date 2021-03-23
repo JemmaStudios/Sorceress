@@ -2770,8 +2770,6 @@ IDX10	2450	2451	2452	2453	2454	2455	2456	2457	2458	2459
 					ANIM_begin
 					ANIM_show	0	0.99900001	sorceress/flexdash/gauge_move[11]
 					ANIM_hide	1	2	sorceress/flexdash/gauge_move[11]
-					ATTR_shadow
-					ATTR_light_level	0	1	sim/cockpit2/electrical/instrument_brightness_ratio[0]
 					ATTR_manip_drag_axis	hand	0	0	-0.1	1	0	sim/cockpit2/engine/actuators/carb_heat_ratio[0]	Carb Heat Adjustment
 					ATTR_manip_wheel	0.1
 					TRIS	1188 36
@@ -2780,8 +2778,6 @@ IDX10	2450	2451	2452	2453	2454	2455	2456	2457	2458	2459
 				ANIM_begin
 				ANIM_show	1	2	sorceress/flexdash/gauge_move[11]
 				ANIM_hide	0	0.99900001	sorceress/flexdash/gauge_move[11]
-				ATTR_no_shadow
-				ATTR_light_level_reset
 				ATTR_manip_drag_xy	four_arrows	500	500	-0.2	0.2	0.25	-0.15000001	sorceress/flexdash/gauge_xpos[11]	sorceress/flexdash/gauge_zpos[11]	Move Carb Heat Lever
 				ATTR_manip_wheel	0.0049999999
 				TRIS	1848 6
@@ -3002,7 +2998,7 @@ IDX10	2450	2451	2452	2453	2454	2455	2456	2457	2458	2459
 				ANIM_begin
 				ANIM_show	1	2	sorceress/flexdash/gauge_move[17]
 				ANIM_hide	0	0.99900001	sorceress/flexdash/gauge_move[17]
-				ATTR_manip_drag_xy	four_arrows	500	500	-0.2	0.2	0.30000001	-0.15000001	sorceress/flexdash/gauge_xpos[16]	sorceress/flexdash/gauge_zpos[16]	Move Carb Heat (2.25)
+				ATTR_manip_drag_xy	four_arrows	500	500	-0.2	0.2	0.30000001	-0.15000001	sorceress/flexdash/gauge_xpos[17]	sorceress/flexdash/gauge_zpos[17]	Move Carb Heat (2.25)
 				ATTR_manip_wheel	0.0049999999
 				TRIS	1812 6
 				ANIM_end
@@ -3228,8 +3224,6 @@ IDX10	2450	2451	2452	2453	2454	2455	2456	2457	2458	2459
 	ATTR_manip_drag_axis	hand	0	0	0.075000003	1	0	sorceress/cockpit/throttle_friction_lock_rat	Adjust Friction Lock
 	ATTR_manip_wheel	0.050000001
 	TRIS	0 372
-		ATTR_shadow
-		ATTR_light_level	0	1	sim/cockpit2/electrical/instrument_brightness_ratio[0]
 		ATTR_manip_command	hand	sim/fuel/fuel_selector_all	Both fuel tank selector
 		TRIS	372 6
 		ATTR_manip_command	hand	sim/fuel/fuel_selector_lft	Left fuel tank selector
@@ -3238,8 +3232,6 @@ IDX10	2450	2451	2452	2453	2454	2455	2456	2457	2458	2459
 		TRIS	384 6
 		ATTR_manip_command	hand	sim/fuel/fuel_selector_rgt	Right fuel tank selector
 		TRIS	390 6
-		ATTR_no_shadow
-		ATTR_light_level_reset
 		ATTR_manip_command	hand	sorceress/engine/fuel_lever_lock_toggle	Toggles fuel lever lock
 		TRIS	1662 48
 		ANIM_begin

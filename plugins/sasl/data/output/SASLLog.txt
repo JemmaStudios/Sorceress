@@ -10,14 +10,17 @@
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	timer_library
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	sorceress_control
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	jemma_flexdash
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: "module"	DEBUG MODE! num_instruments: 22
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: Sorceress FlexDash: loading instruments from C:\Program Files (x86)/Steam/steamapps/common/X-Plane 11/Aircraft/Jemma Studios/Sorceress/plugins/sasl/data/modules/Custom Module/data/instruments.json
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: Sorceress FlexDash: loading preset C:\Program Files (x86)/Steam/steamapps/common/X-Plane 11/Aircraft/Jemma Studios/Sorceress/plugins/sasl/data/modules/Custom Module/data/instruments.json
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_popup
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_saverestore
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_ui_button
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_configuration
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_ui_checkbox
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_ui_radiogroup
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_ui_radio
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_ui_movelock_button
+[BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_peekaboo
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_movewindow
 [BECK-MAHONEY_SORCERESS INFO]: [LUA]: loading	flexdash_ui_pos_text
 [BECK-MAHONEY_SORCERESS INFO]: Module loaded
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: Sorceress settings saving to C:\Program Files (x86)/Steam/steamapps/common/X-Plane 11/Aircraft/Jemma Studios/Sorceress/flexdash.json
-[BECK-MAHONEY_SORCERESS INFO]: Disabling...
-[BECK-MAHONEY_SORCERESS INFO]: [LUA]: Sorceress settings saving to C:\Program Files (x86)/Steam/steamapps/common/X-Plane 11/Aircraft/Jemma Studios/Sorceress/sorceress_config.ini
-[BECK-MAHONEY_SORCERESS INFO]: SASL plugin stopped...

@@ -17,6 +17,8 @@ button_images["save"] = {50, 20, 148, 48}
 button_images["restore"] = {202, 20, 148, 48}
 
 flexdash_lib = {}
+flexdash_lib.num_click_spots = 0
+flexdash_lib.owns_mousedown = 0
 
 function flexdash_lib.doMouseUp (button, parentX, parentY, button_name)
     savefirst_flags["close"] = true
@@ -37,7 +39,7 @@ function draw()
 	local x, y = size[1]/2, (size[2]/2)+25
 
     -- drawText(urbanist, x, y, get(message), 16, false, false, TEXT_ALIGN_CENTER, white)
-    sasl.gl.drawTexture ( bkgnd_image , 0, 0, 400 , 200)
+    sasl.gl.drawTexture ( bkgnd_image , 0, 0, 400 , 200, white)
     drawTextI(urbanist, x+shadow_offset, y-25-shadow_offset, get(message), TEXT_ALIGN_CENTER, black)
     drawTextI(urbanist, x, y-25, get(message), TEXT_ALIGN_CENTER, white)
 

@@ -54,7 +54,7 @@ function draw()
 	local x, y = size[1]/2, size[2]/2
 
     local pos_string = string.format ("x: %.4f, y: %.4f", get(gauge_xpos, get(idx)), get(gauge_zpos, get(idx)))
-    sasl.gl.drawTexture ( bkgnd_image , 0, 0, 400 , 200)
+    sasl.gl.drawTexture ( bkgnd_image , 0, 0, 400 , 200, white)
     
     -- x = msg_x
     -- y = pos_msg_y
@@ -171,6 +171,9 @@ function check_moves (x, y, phase)
 end
 
 flexdash_lib = {}
+flexdash_lib.num_click_spots = 0
+flexdash_lib.owns_mousedown = 0
+
 function flexdash_lib.doMouseUp (button, parentX, parentY)
     if button == MB_LEFT then
         checked_closed(parentX, parentY)
@@ -248,10 +251,10 @@ components = {
                             button_name = "fd_big_button_left"},
     flexdash_ui_button {    position=button_images["small_right"]["xywh"],
                             button_name = "fd_big_button_right"},
-    flexdash_ui_button {    position={364, 172, 24 , 24},
-                            width = 24,
-                            height = 24,
-                            button_name = "fd_close_button"},
+    -- flexdash_ui_button {    position={364, 172, 24 , 24},
+    --                         width = 24,
+    --                         height = 24,
+    --                         button_name = "fd_close_button"},
     flexdash_ui_pos_text {  position = {pos_msg_x, pos_msg_y, 100, 20},
                             s_offset = shadow_offset},
 }

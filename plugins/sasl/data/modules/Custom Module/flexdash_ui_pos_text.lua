@@ -1,4 +1,7 @@
 -- flexdash_ui_pos_text.lua
+
+defineProperty ("s_offset", 2)
+
 local black	= {0, 0, 0, 1}
 local cyan	= {0, 1, 1, 1}
 local magenta	= {1, 0, 1, 1}
@@ -14,7 +17,8 @@ local MOUSE_HOVER = 2
 local MOUSE_DOWN = 3
 local mouse_status = MOUSE_OFF
 
-defineProperty ("s_offset", 2)
+flexdash_lib.num_click_spots = flexdash_lib.num_click_spots + 1
+local is_me = flexdash_lib.num_click_spots
 
 local pos_string = {}
 pos_string[MOUSE_OFF] = ""
@@ -26,39 +30,48 @@ function onMouseMove(component, x, y, button, parentX, parentY)
 end
 
 function onMouseDown(component, x, y, button, parentX, parentY)
-    if button == MB_LEFT then
-        mouse_status = MOUSE_DOWN
+    if flexdash_lib.owns_mousedown == 0 then
+        flexdash_lib.owns_mousedown = is_me     -- only one clicky thing should have control of the mouseUp/mouseHold events or strange things happens
+        if button == MB_LEFT then
+            mouse_status = MOUSE_DOWN
+        end
+        flexdash_lib.doMouseDown (button, parentX, parentY)
     end
-    flexdash_lib.doMouseDown (parentX, parentY, button)
     return true
 end
 
 function onMouseUp(component, x, y, button, parentX, parentY)
-    if mouse_status == MOUSE_DOWN then
-        mouse_status = MOUSE_HOVER
-    end
-    if x > get(position)[3] or y > get(position)[4] then
+    mouse_status = MOUSE_HOVER
+    if flexdash_lib.owns_mousedown == is_me then
+        if x > get(position)[3] or y > get(position)[4] then
+            mouse_status = MOUSE_OFF
+        else
+            flexdash_lib.doMouseUp (button, parentX, parentY)
+        end
+    else
         mouse_status = MOUSE_OFF
     end
-    flexdash_lib.doMouseUp (parentX, parentY, button)
+    flexdash_lib.owns_mousedown = 0
     return true
 end
 
 function onMouseHold (component, x, y, button, parentX, parentY)
-    flexdash_lib.doMouseHold(parentX, parentY, button)
+    if flexdash_lib.owns_mousedown == is_me then
+        flexdash_lib.doMouseHold(button, parentX, parentY)
+    end
     return true
 end
 
 function onMouseEnter()
-    if mouse_status ~= MOUSE_DOWN then -- we don't want to change state if the mouse button is down
+    if flexdash_lib.owns_mousedown == is_me then
+        mouse_status = MOUSE_DOWN
+    else
         mouse_status = MOUSE_HOVER
     end
 end
 
 function onMouseLeave()
-    if mouse_status == MOUSE_HOVER then -- otherwise we're probably mouse-down and don't want to change state.
-        mouse_status = MOUSE_OFF
-    end
+    mouse_status = MOUSE_OFF
 end
 
 function draw()

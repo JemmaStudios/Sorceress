@@ -54,6 +54,12 @@ if isFileExists ( config_path ) then
 	for i, v in pairs (config) do
 		settings[i] = v
 	end
+else
+	sasl.logWarning("------------------------------------------------------------")
+	sasl.logWarning("Could not find Beck-Mahoney Sorceress configuration named...")
+	sasl.logWarning(config_path)
+	sasl.logWarning("Sorceress will run with default configuration")
+	sasl.logWarning("------------------------------------------------------------")
 end
 
 ----------------------------------------------------------------------------------
