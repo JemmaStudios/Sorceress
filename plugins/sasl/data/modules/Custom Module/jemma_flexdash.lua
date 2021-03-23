@@ -252,11 +252,14 @@ local popup_config = contextWindow {
     },
 }
 
-local hotzone_w, hotzone_h = 300, 150
+local hotzone_w, hotzone_h = 188, 78
+local offset_y = (hotzone_h-48)/2
+pop_y = screen_height/2 - offset_y
+
 peekaboo = contextWindow {
     name            = "FlexDash Peekaboo Menu",
     -- position        = {0, pop_y-(hotzone_h/2), hotzone_w, hotzone_h},
-    position        = {0, 0, screen_width, screen_height},
+    position        = {0, pop_y, hotzone_w, hotzone_h},
     noResize		= true,
     visible			= true,
     noBackground    = true,
@@ -264,7 +267,7 @@ peekaboo = contextWindow {
     noDecore        = true,
     noMove          = true,
     components		= {
-        flexdash_peekaboo {position={0, (screen_height/2)-24, 168, 48}},      
+        flexdash_peekaboo {position={0, offset_y, 168, 48}},      
     },
 }
 

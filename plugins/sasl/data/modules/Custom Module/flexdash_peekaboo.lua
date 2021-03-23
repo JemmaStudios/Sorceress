@@ -86,7 +86,7 @@ function do_slide()
 end
 
 function draw()
-    sasl.gl.drawTexture ( button_image[mouse_status]["image"], image_x, 0, button_image[mouse_status]["width"], 48, white)
+    sasl.gl.drawTexture ( button_image[mouse_status]["image"], image_x, 0, button_image[mouse_status]["width"], 32, white)
 end
 
 function update ()
