@@ -4,7 +4,9 @@ local white = {1, 1, 1, 1}
 local MOUSE_OFF = 1
 local MOUSE_HOVER = 2
 local MOUSE_DOWN = 3
+local DIMMED = 4
 local mouse_status = MOUSE_OFF
+local old_mouse_status
 
 local IS_CHECKED = 1
 local IS_UNCHECKED = 2
@@ -21,14 +23,19 @@ checkbox_image[IS_UNCHECKED] = {}
 checkbox_image[IS_UNCHECKED][MOUSE_OFF] = sasl.gl.loadImage ("ui_assets/fd_checkbox_off_out.png", 0, 0, get(width), get(height))
 checkbox_image[IS_UNCHECKED][MOUSE_HOVER] = sasl.gl.loadImage ("ui_assets/fd_checkbox_off_over.png", 0, 0, get(width), get(height))
 checkbox_image[IS_UNCHECKED][MOUSE_DOWN] = sasl.gl.loadImage ("ui_assets/fd_checkbox_on_over.png", 0, 0, get(width), get(height))
+checkbox_image[IS_UNCHECKED][DIMMED] = sasl.gl.loadImage ("ui_assets/fd_checkbox_off_dim.png", 0, 0, get(width), get(height))
 checkbox_image[IS_CHECKED][MOUSE_OFF] = sasl.gl.loadImage ("ui_assets/fd_checkbox_on_out.png", 0, 0, get(width), get(height))
 checkbox_image[IS_CHECKED][MOUSE_HOVER] = sasl.gl.loadImage ("ui_assets/fd_checkbox_on_over.png", 0, 0, get(width), get(height))
 checkbox_image[IS_CHECKED][MOUSE_DOWN] = sasl.gl.loadImage ("ui_assets/fd_checkbox_off_over.png", 0, 0, get(width), get(height))
+checkbox_image[IS_CHECKED][DIMMED] = sasl.gl.loadImage ("ui_assets/fd_checkbox_on_dim.png", 0, 0, get(width), get(height))
 
 
 
 function onMouseMove(component, x, y, button, parentX, parentY)
-    return true
+    debug_lib.on_debug(get(my_checkbox_id))
+    debug_lib.on_debug(tostring(fd_move_flag[get(my_checkbox_id)] == false))
+    return fd_move_flag[get(my_checkbox_id)] == false
+    -- return true
 end
 
 function onMouseDown(component, x, y, button, parentX, parentY)
@@ -80,4 +87,11 @@ function draw()
     sasl.gl.drawTexture ( checkbox_image[checkbox_id[get(my_checkbox_id)]][mouse_status] , 0, 0, size[1] , size[2], white)
 end
 
+function update()
+    if fd_move_flag[get(my_checkbox_id)] then
+        mouse_status = DIMMED
+    elseif mouse_status == DIMMED then
+        mouse_status = MOUSE_OFF
+    end
+end
 

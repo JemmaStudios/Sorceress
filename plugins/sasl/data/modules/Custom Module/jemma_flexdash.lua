@@ -52,6 +52,11 @@ fd_ui = {}
 fd_ui["flag"] = false
 fd_ui["moved"] = false
 
+fd_move_flag = {}
+for i = 1, 12 do
+    fd_move_flag[i] = false
+end
+
 for i = 1, num_instruments do
     table.insert(fd_ui, false)
 end
@@ -122,6 +127,7 @@ function load_preset ()
             if i == 10 then
                 set (gauge_show, 1, flexdash_preset_settings["lg_id_"..i])
                 flexdash_settings["gauge_show_"..flexdash_preset_settings["lg_id_"..i]] = 1
+                flexdash_preset_settings["show_"..i] = 1
             else
                 set (gauge_show, 0, flexdash_preset_settings["lg_id_"..i])
                 set (gauge_show, 0, flexdash_preset_settings["sm_id_"..i])            

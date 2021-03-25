@@ -6,8 +6,11 @@ local MOUSE_HOVER = 2
 local MOUSE_DOWN = 3
 local IS_LOCKED = 1
 local IS_MOVING = 2
+
 local mouse_status = MOUSE_OFF
 local lock_status = IS_LOCKED
+local is_dim = false
+
 
 
 flexdash_lib.num_click_spots = flexdash_lib.num_click_spots + 1
@@ -25,8 +28,11 @@ button_image[IS_LOCKED][MOUSE_DOWN] = sasl.gl.loadImage ("ui_assets/fd_move_butt
 button_image[IS_MOVING][MOUSE_OFF] = sasl.gl.loadImage ("ui_assets/fd_lock_button_off.png", 0, 0, get(width), get(height))
 button_image[IS_MOVING][MOUSE_HOVER] = sasl.gl.loadImage ("ui_assets/fd_lock_button_over.png", 0, 0, get(width), get(height))
 button_image[IS_MOVING][MOUSE_DOWN] = sasl.gl.loadImage ("ui_assets/fd_lock_button_click.png", 0, 0, get(width), get(height))
+button_image["dimmed"] = sasl.gl.loadImage ("ui_assets/fd_move_button_dim.png", 0, 0, get(width), get(height))
+
 
 function onMouseMove(component, x, y, button, parentX, parentY)
+    
     return true
 end
 
@@ -50,6 +56,7 @@ function onMouseUp(component, x, y, button, parentX, parentY)
             -- don't move it if we can't show it.
             if flexdash_preset_settings["show_"..get(button_group_id)] == 1 then
                 lock_status = 3 - lock_status
+                fd_move_flag[get(button_group_id)] = lock_status == IS_MOVING
                 flexdash_lib.doMouseUp (button, parentX, parentY, "fd_movelock_button", get(button_group_id))
             end
         end
@@ -80,5 +87,13 @@ function onMouseLeave()
 end
 
 function draw()
-    sasl.gl.drawTexture ( button_image[lock_status][mouse_status] , 0, 0, size[1] , size[2], white)
+    if is_dim and get(button_group_id) ~= 10 then
+        sasl.gl.drawTexture ( button_image["dimmed"] , 0, 0, size[1] , size[2], white)
+    else
+        sasl.gl.drawTexture ( button_image[lock_status][mouse_status] , 0, 0, size[1] , size[2], white)
+    end
+end
+
+function update()
+    is_dim = flexdash_preset_settings["show_"..get(button_group_id)] == 0
 end

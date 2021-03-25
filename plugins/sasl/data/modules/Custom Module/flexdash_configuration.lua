@@ -89,13 +89,15 @@ function flexdash_lib.doMouseUp (button, parentX, parentY, button_name, cid)
     if button_name == "fd_close_button" then
         fd_config_flags["close"] = true
     elseif button_name == "checkbox" then
-        checkbox_id[cid] = 3-checkbox_id[cid]
-        flexdash_preset_settings["show_"..cid] = 2 - checkbox_id[cid]
-        showhide_instrument(cid)
+        if fd_move_flag[cid] == false then -- if we aren't moving it, we can hide it.
+            checkbox_id[cid] = 3-checkbox_id[cid]
+            flexdash_preset_settings["show_"..cid] = 2 - checkbox_id[cid]
+            showhide_instrument(cid)
+        end
     elseif button_name == "radio_group" then
         if cid[1] == 10 then -- presets radio group
             flexdash_settings["preset"] = cid[2]
-        else
+        elseif fd_move_flag[cid[1]] == false then -- if we aren't moving it, we can change it.
             flexdash_preset_settings["which_one_"..cid[1]] = cid[2]
             showhide_instrument(cid[1])
         end

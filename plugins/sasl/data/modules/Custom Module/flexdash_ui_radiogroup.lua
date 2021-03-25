@@ -63,4 +63,5 @@ function update ()
             end
         end
     end
+    updateAll(components)
 end    
