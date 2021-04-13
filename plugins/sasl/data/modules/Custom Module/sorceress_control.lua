@@ -37,6 +37,7 @@ local com1_moving_to = {0, 0, 0, 0, 0}
 local lohi_moving = not_moving
 local old_com1_vol = 0
 local old_com1_sq = 0
+canopy_secured = false -- true only if canopy is closed and bolt is up.
 
 defineProperty("canopy_bolt_time", 0.50)    -- amount of time in seconds to fully move the canopy bolt lever
 defineProperty("canopy_open_time", 1.5) -- how long does it take for the canopy to slide.
@@ -62,6 +63,14 @@ defineProperty("lohi_time",0.2) --amount of time in seconds for the lo-hi radio 
 defineProperty("com1_sq_start", 0.4) -- ratio when squelch starts effecting com volume (to be replaced by static)
 defineProperty("com1_sq_end", 0.95) -- ratio when com volume is out and static is max.
 defineProperty("com1_sq_bottom", 0.2) -- ratio that communication is under squelched. (starts to get quiet.  shutting off at squelch = 0)
+defineProperty("canopy_theta_back", 20) -- theta angle at which the canopy will slide back if unlocked (positive values are pitch up)
+defineProperty("canopy_theta_fwd", -1) -- theta angle at which the canopy will slide forward if unlocked (negative values are pitch down)
+defineProperty("canopy_slide_min_speed", 15) -- number of seconds it takes gravity/pitch to slide canopy at slowest speed
+defineProperty("canopy_slide_max_speed", 2) -- number of seconds it takes gravity/pitch to slide canopy closed at highest speed
+defineProperty("canopy_theta_range_back", 30) -- number of degrees between slowest change and fastest change (based from canopy_theta_back)
+defineProperty("canopy_theta_range_forward", 10) -- number of degrees between slowest change and fastest change (based from canopy_theta_fwd)
+defineProperty("canopy_axil_g_back", -0.32) -- negative g above which (more negative) the canopy will slide back if unlocked.
+defineProperty("canopy_axil_g_range", 0.40) -- g-range from slowest change to fastest change (starting at canopy_axil_g_back)
 
 sasl.al.setMasterGain ( 1000 )
 radio_on_click = sasl.al.loadSample ("sounds/radio_click.wav")
@@ -345,6 +354,8 @@ xp_adf1_vol = globalPropertyf ("sim/cockpit2/radios/actuators/audio_volume_adf1"
 xp_adf1_pwr = globalPropertyi ("sim/cockpit2/radios/actuators/adf2_power")
 xp_adf1_freq = globalPropertyi ("sim/cockpit/radios/adf1_freq_hz")
 xp_adf1_sel = globalPropertyi ("sim/cockpit2/radios/actuators/audio_selection_adf1")
+xp_gforce_axil = globalProperty ("sim/flightmodel2/misc/gforce_axil")
+xp_true_theta = globalProperty ("sim/flightmodel2/position/true_theta")
 
 coil_rat = createGlobalPropertyfa ("sorceress/gear/spring_coil_rat", {0.0, 0.0})
 coil_psi = createGlobalPropertyfa ("sorceress/gear/spring_coil_psi", {0.0, 0.0})
@@ -800,6 +811,66 @@ function check_com1_vol ()
     old_com1_vol = t_vol
 end 
 
+function canopy_secure ()
+    if get(canopy_open_rat) == isClosed and get(canopy_bolt_rat) == isOn then
+        return true
+    else
+        return false
+    end
+end
+
+function get_slide_move_step (true_theta, theta, theta_range, speed_range)
+    local theta_ratio = math.abs((true_theta - theta) / theta_range)
+    if theta_ratio > 1 then theta_ratio = 1 end
+    local canopy_slide_time = get(canopy_slide_max_speed) + (speed_range - (speed_range * theta_ratio))
+    return 1 / get (canopy_slide_time) * timer_lib.SIM_PERIOD
+
+end
+
+function slide_canopy ()
+    true_theta = get(xp_true_theta)
+    local theta_back = get(canopy_theta_back)
+    local theta_fwd = get(canopy_theta_fwd)
+    local theta_range_back = get(canopy_theta_range_back)
+    local theta_range_fwd = get(canopy_theta_range_forward)
+    local speed_range = get(canopy_slide_min_speed) - get(canopy_slide_max_speed)
+    local move_step = 0
+    local canopy_slide_time = 0
+    local canopy_rat = get (canopy_open_rat)
+    local new_canopy_rat = canopy_rat
+    local theta_ratio = 0
+    local g_axil = get (xp_gforce_axil)
+    local g_axil_back = get (canopy_axil_g_back)
+    local g_range = get (canopy_axil_g_range)
+    if true_theta > theta_back and canopy_rat <= 1 then
+        move_step = get_slide_move_step (true_theta, theta_back, theta_range_back, speed_range)
+        -- theta_ratio = (true_theta - theta_back) / theta_range
+        -- if theta_ratio > 1 then theta_ratio = 1 end
+        -- canopy_slide_time = speed_range - (speed_range * theta_ratio)
+        -- move_step = 1 / get (canopy_slide_time) * timer_lib.SIM_PERIOD
+        new_canopy_rat = canopy_rat + move_step
+        if new_canopy_rat > 1 then new_canopy_rat = 1 end
+        set(canopy_open_rat, new_canopy_rat)
+    elseif true_theta < theta_fwd and canopy_rat >= 0 then
+        move_step = get_slide_move_step (true_theta, theta_fwd, theta_range_fwd, speed_range)
+        -- theta_ratio = -((true_theta - theta_fwd) / theta_range)
+        -- if theta_ratio > 1 then theta_ratio = 1 end
+        -- canopy_slide_time = speed_range - (speed_range * theta_ratio)
+        -- move_step = 1 / get (canopy_slide_time) * timer_lib.SIM_PERIOD
+        new_canopy_rat = canopy_rat - move_step
+        if new_canopy_rat < 0 then new_canopy_rat = 0 end
+        set(canopy_open_rat, new_canopy_rat)
+    elseif g_axil < g_axil_back then
+        local g_ratio = math.abs(g_axil-g_axil_back / g_range)
+        if g_ratio > 1 then g_ratio = 1 end
+        canopy_slide_time = get(canopy_slide_max_speed) + (speed_range - (speed_range * g_ratio))
+        move_step = 1 / get (canopy_slide_time) * timer_lib.SIM_PERIOD
+        new_canopy_rat = canopy_rat + move_step
+        if new_canopy_rat > 1 then new_canopy_rat = 1 end
+        set(canopy_open_rat, new_canopy_rat)
+    end
+end
+
 function do_first_time ()
     -- do startup stuff
     first_time = false
@@ -865,6 +936,14 @@ function update ()
     rotate_prop()
     cht()
     egt()
+    
+    canopy_sliding = false
+    if not canopy_secure() then
+        local true_theta = get(xp_true_theta)
+        if get(xp_gforce_axil) < get(canopy_axil_g_back) or (true_theta > get(canopy_theta_back) or true_theta < get(canopy_theta_fwd)) then
+            slide_canopy()
+        end
+    end
 
     -- set (coil_psi, get(xp_rudder), 1)
     -- set (anchor_psi, get(xp_rudder)*2, 1)

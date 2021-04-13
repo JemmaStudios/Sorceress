@@ -3293,19 +3293,19 @@ IDX10	2450	2451	2452	2453	2454	2455	2456	2457	2458	2459
 		ANIM_end
 	ANIM_begin
 	ANIM_trans	0	-0.33891001	2.40185	0	-0.33891001	2.40185
-	ANIM_rotate_begin	0	0	-1	sim/joystick/yoke_roll_ratio
+	ANIM_rotate_begin	0	0	-1	sim/cockpit2/controls/yoke_roll_ratio
 	ANIM_rotate_key	-1	-9.9998324
 	ANIM_rotate_key	0	0
 	ANIM_rotate_key	1	9.9998324
 	ANIM_rotate_end
 		ANIM_begin
 		ANIM_trans	0	0.094489999	-0	0	0.094489999	-0
-		ANIM_rotate_begin	1	0	-0	sim/joystick/yoke_pitch_ratio
+		ANIM_rotate_begin	1	0	-0	sim/cockpit2/controls/yoke_pitch_ratio
 		ANIM_rotate_key	-1	-9.9998324
 		ANIM_rotate_key	0	0
 		ANIM_rotate_key	1	9.9998324
 		ANIM_rotate_end
-			ATTR_manip_drag_xy	four_arrows	500	500	-1	1	1	-1	sim/joystick/yoke_roll_ratio	sim/joystick/yoke_pitch_ratio	Control Stick
+			ATTR_manip_drag_xy	four_arrows	500	500	-1	1	1	-1	sim/cockpit2/controls/yoke_roll_ratio 	sim/cockpit2/controls/yoke_pitch_ratio	Control Stick
 			ATTR_manip_wheel	0.1
 			TRIS	1896 564
 		ANIM_end
